@@ -119,7 +119,9 @@ Helpy built based on IBM Watson analyzes user’s words, understands intent and 
 ![image](https://user-images.githubusercontent.com/42545200/46230671-45543700-c3a4-11e8-82b3-c3bacef5ab01.png)
 
 (1) Analyze and identify user’s words and intents
+
 (2) Disaster data call based on user's situations
+
 (3) Forward information to users
 
 
