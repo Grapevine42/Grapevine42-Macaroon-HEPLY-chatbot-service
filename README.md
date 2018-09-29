@@ -128,6 +128,7 @@ Helpy built based on IBM Watson analyzes user’s words, understands intent and 
 ## Utilized data
 
 **[1. Disaster Information(data)]()**
+
 This project used arbitrary data made assuming a disaster due to the following constraints. Considering the period and resource of the project, the target region of this project was limited to New York, United States.
 - For the case of South Korea, weather and disaster data information can be found from public API provided by the government operated site, data.go.kr. On the other hand, for the case of USA, there were difficulties to collect data because corresponding API is not standardized or not opened to the public. 
 - In addition, real disaster situation has to occur to perform the test of corresponding helpy services. However, testing was difficult because no real disaster situation can occur when using actual API. 
