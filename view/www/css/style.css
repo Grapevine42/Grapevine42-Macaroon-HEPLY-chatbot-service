@@ -1,0 +1,335 @@
+
+.topBar {
+  background: #ffffff;
+}
+
+.topLogo {
+  margin: auto;
+  width: 61px;
+  height: 22px;
+  padding-top: 4px;
+}
+
+.custom-popup {
+  margin: auto;
+  width: 321px;
+  height: 407px;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+}
+
+.titleGroup {
+
+}
+
+.helpTextarea {
+  height: 130px;
+  width: 76%;
+  margin-left: 45px;
+  margin-right: 45px;
+  border-radius: 6px;
+  background: #F9F9F9;
+  border: solid 1px;
+  row: 8;
+  margin-top: 10px;
+}
+
+.currentLocationInput {
+  margin-left: 45px;
+  margin-right: 45px;
+  width: 76%;
+  height: 32px;
+  border-radius: 6px;
+  background: #F9F9F9;
+  border: solid 1px;
+  margin-top: 10px;
+}
+
+.helpMeBtn {
+  height: 48px;
+  margin-left: 45px;
+  border-radius: 24px;
+  width: 76%;
+  color: #ffffff;
+  font-size: 16px;
+  font-family: d1b;
+  margin-top: 25px;
+  background: #5ee7ff; /* Old browsers */
+  background: -moz-linear-gradient(top, #39A1F7 0%, #782FF5 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #39A1F7 0%, #782FF5 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #39A1F7 0%, #782FF5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#39A1F7', endColorstr='#782FF5', GradientType=0); /* IE6-9 */
+}
+
+.helpYouTable {
+  font-family: d1;
+  font-size: 13px;
+  margin: auto;
+}
+
+.helpYouTable td {
+  width: 90px;
+}
+
+.helpYouTable1 {
+  font-family: d1;
+  font-size: 13px;
+}
+
+.helpYouTable1 td {
+  height: 30px;
+}
+
+.chatCard {
+  margin-left: 45px;
+  width: 280px;
+  white-space: nowrap;
+}
+
+.chatImg {
+  float: left;
+  width: 37px;
+  height: 26px;
+  padding-left: 22px;
+}
+
+.chatCardRefuge {
+  margin-left: 45px;
+  width: 251px;
+  height: 259px;
+}
+
+.chatCardArticle {
+  margin-left: 45px;
+  width: 251px;
+  height: 259px;
+}
+
+.chatMap {
+  width: 220px;
+  height: 103px;
+}
+
+.demo-card-header-pic .card-header {
+  height: 40vw;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.demo-card-header-pic .card-content-padding .date {
+  color: #8e8e93;
+}
+
+#messageBody {
+  margin-bottom: 100px;
+}
+
+#helpYouLocation {
+  font-size: 11px;
+}
+
+#helpYouTime {
+  font-size: 36px;
+  color: #17C5E5;
+}
+
+#helpYouLocation1 {
+  font-size: 11px;
+  width: 50px;
+  height: 10px;
+  white-space: normal;
+}
+
+#helpYouTime1 {
+  font-size: 36px;
+  color: #17C5E5;
+}
+
+.helpYouImg {
+  width: 64px;
+  height: 50px;
+}
+
+.helpPeopleInfo {
+  width: 350px;
+  height: 94px;
+  background: #ffffff;
+  z-index: 9999;
+  margin-top: 15px;
+  margin-left: 12px;
+  margin-right: 12px;
+  position: absolute;
+  border-radius: 6px;
+  border: solid 0.5px #dcdcdc;
+}
+
+.currentLocationText {
+  margin-left: 45px;
+  font-size: 15px;
+  padding-top: 10px;
+  clear: left;
+}
+
+.helpuIcon {
+  width: 58px;
+  height: 30px;
+  margin-left: 45px;
+  float: left;
+
+}
+
+.requestText {
+  font-family: d1b;
+  font-size: 20px;
+  margin-left: 8px;
+  float: left;
+}
+
+.request-help-popup-frame {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  margin-top: auto;
+  height: 433px;
+  border-radius: 40px 40px 0px 0px;
+
+}
+
+.mymessageBar {
+  margin-bottom: 50px;
+}
+
+.currentDisasterInfo {
+  font-family: d1b;
+  font-size: 11px;
+  text-align: left;
+}
+
+.detailDisaster {
+  font-family: d1;
+  font-size: 11px;
+  text-align: left;
+}
+
+.sliderImage {
+  height: 400px;
+  width: 10px;
+  border: none;
+  background-color: #fafafa;
+}
+
+.disasterInfoIcon {
+  margin: auto;
+}
+
+.disasterinfoEmotion {
+  font-size: 30px;
+  color: #17C5E5;
+}
+
+.disasterInfoLocationText {
+  font-size: 11px;
+}
+
+.sosbutton {
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  display: block;
+
+}
+.myslider {
+  margin: 0px;
+  height: 100%;
+}
+
+.myBtn {
+  width: 84px;
+  height: 30px;
+  font-size: 8pt;
+  border: solid 0px #ffffff;
+  border-radius: 24px;
+  background-image: linear-gradient(#39a1f7, #5c61f5);
+  background: -moz-linear-gradient(top, #39a1f7 0%, #5c61f5 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #39a1f7 0%, #5c61f5 100%); /* Chrome10-25,Safari5.1-6 */
+  font-family: d1b;
+  color: #ffffff;
+}
+
+.myMessage {
+  background: #5ee7ff; /* Old browsers */
+  background: -moz-linear-gradient(top, #5ee7ff 0%, #00cdff 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #5ee7ff 0%, #00cdff 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #5ee7ff 0%, #00cdff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5ee7ff', endColorstr='#00cdff', GradientType=0); /* IE6-9 */
+}
+
+.tabiconelement_active {
+  height: 40px;
+  width: 40px;
+  margin: auto;
+}
+
+.tabiconelement_deactive {
+  height: 30px;
+  width: 30px;
+  margin: auto;
+}
+
+
+.messagearea {
+  border-width: 0.5px;
+  border-style: solid;
+  font-size: 14px;
+  border-radius: 18px 18px 18px 18px;
+  border-color: rgba(0, 0, 0, 0.12);
+  margin-left: 9px;
+  margin-right: 9px;
+}
+
+.demo-facebook-card .card-header {
+  display: block;
+  padding: 10px;
+}
+
+.demo-facebook-card .demo-facebook-avatar {
+  float: left;
+}
+
+.demo-facebook-card .demo-facebook-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.demo-facebook-card .demo-facebook-date {
+  margin-left: 44px;
+  font-size: 13px;
+  color: #8e8e93;
+}
+
+.demo-facebook-card .card-footer {
+  background: #fafafa;
+}
+
+.demo-facebook-card .card-footer a {
+  color: #81848b;
+  font-weight: 500;
+}
+
+.demo-facebook-card .card-content img {
+  display: block;
+}
+
+.demo-facebook-card .card-content-padding {
+  padding: 15px 10px;
+}
+
+.demo-facebook-card .card-content-padding .likes {
+  color: #8e8e93;
+}
+

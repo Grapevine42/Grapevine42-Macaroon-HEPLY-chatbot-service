@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--
+  Customize this policy to fit your own app's needs. For more guidance, see:
+      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+  Some notes:
+      * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+      * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+      * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+          * Enable inline JS: add 'unsafe-inline' to default-src
+  -->
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+  <!--<meta name="viewport"-->
+  <!--content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#2196f3">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="viewport"
+        content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no; target-densityDpi=device-dpi"/>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js.map"></script>
+
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4eNRqzjvSO377TBROM49jWkpnphBoaZk"></script>
+
+  <title>My App</title>
+
+  <link rel="stylesheet" href="framework7/css/framework7.css">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+
+  <script>
+
+    function chatMap() {
+      var center = new google.maps.LatLng(40.67381, -73.91390);
+
+
+      map = new google.maps.Map(document.getElementById('chatMap'), {
+        center: {lat: 40.67381, lng: -73.91390},
+        disableDefaultUI: true,
+        zoom: 18.8
+      });
+    }
+
+    var circle;
+    var rMin = 0, rMax = 100,
+      step = 10;
+    var intID;
+
+    function walwalMap() {
+      var center = new google.maps.LatLng(40.67381, -73.91390);
+
+
+      map = new google.maps.Map(document.getElementById('walwal_map'), {
+        center: {lat: 40.67381, lng: -73.91390},
+        disableDefaultUI: true,
+        zoom: 18.8
+      });
+      var icon = {
+        url: "https://i.imgur.com/xBtOUOW.png", // url
+        scaledSize: new google.maps.Size(41, 54), // scaled size
+        origin: new google.maps.Point(0, 0), // origin
+        anchor: new google.maps.Point(0, 0) // anchor
+      };
+
+      marker = new google.maps.Marker({
+        map: map,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+        icon: icon,
+        position: {lat: 40.67381, lng: -73.91390}
+      });
+      map.addListener('click', function () {
+        $(".helpPeopleInfo").hide();
+      })
+      marker.addListener('click', toggleBounce);
+      circle = new google.maps.Circle({
+        center: center,
+        radius: rMin,
+        strokeColor: "#01C3F9",
+        strokeOpacity: 1,
+        strokeWeight: 2,
+        fillColor: "#01C3F9",
+        fillOpacity: 0.1
+      });
+
+      function setAnimation() {
+        var direction = 1;
+        intID = setInterval(function () {
+          var radius = circle.getRadius();
+          if ((radius > rMax)) {
+            direction *= 0;
+            circle.setRadius(0);
+            circle.setMap(null);
+          }
+          circle.setRadius(radius + direction * step);
+        }, 50);
+      }
+
+      function toggleBounce() {
+        circle.setMap(map);
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+        setAnimation()
+        people();
+      }
+
+    }
+
+    function people() {
+
+      var neighborhoods = [
+        {lat: 52.511, lng: 13.447},
+        {lat: 52.549, lng: 13.422},
+        {lat: 52.497, lng: 13.396},
+        {lat: 52.517, lng: 13.394}
+      ];
+      var list = [];
+
+
+      axios.get(serverurl + 'listPhoto', {})
+        .then(function (response) {
+            for (var i = 0; i < response.data.length; i++) {
+              // console.log(response.data[i].lat);
+              var tmp = [];
+              tmp.push(response.data[i].path);
+              tmp.push(response.data[i].time);
+              tmp.push(response.data[i].name);
+              var location = {
+                lat: Number(response.data[i].lat),
+                lng: Number(response.data[i].lng)
+              };
+              tmp.push(location);
+              tmp.push(response.data[i].help);
+
+              list.push(tmp);
+            }
+
+            var tmpNum = 1;
+            var sendNum = 0;
+            for (var i = 0; i < list.length; i++) {
+
+              if (list[i][4] == '0') {
+                var userInfo = new google.maps.Marker({
+                  position: list[i][3],
+                  map: map,
+                  icon: 'images/circle/user' + tmpNum + '.png'
+                });
+                tmpNum = tmpNum + 1;
+                sendNum = tmpNum;
+                console.log(list[i]);
+
+                attachSecretMessage(userInfo, list[i][0], list[i][1], list[i][2], tmpNum);
+              }
+              else {
+                var userHelp = new google.maps.Marker({
+                  position: list[i][3],
+                  map: map,
+                  icon: 'images/circle/help.png'
+                });
+                console.log(list[i]);
+                attachHelpMessage(userHelp, list[i][2], list[i][3]);
+              }
+            }
+
+
+            function attachSecretMessage(marker, name, time, fileName, userImage) {
+              var infowindow = new google.maps.InfoWindow({
+                content: msgInit(name, time, fileName, userImage)
+              });
+
+              marker.addListener('click', function () {
+                infowindow.open(marker.get('map'), marker);
+              });
+            }
+
+            function msgInit(name, time, fileName, userImage) {
+              userImage = userImage - 1;
+              // return time + '<br>' + fileName + '<br><br>' +
+              return '<table style="margin-top: 15px;"><tbody>' +
+                '<tr><td rowspan="2" style="vertical-align: top;"><img src="images/circle/user' + userImage + '.png" style=" margin-top: 0px; margin-right : 2px; width: 38px; height: 38px"></td>' +
+                '<td><b>Location</b><p style="margin-top : 0px; font-size: 11px; max-width: 85px;">' + fileName + '</p></td>' +
+                '<td rowspan="2"><img src="images/' + name + '" style="margin-right : 0px; width: 118px; height: 118px"></td></tr>' +
+                '<tr><td><b>Date</b><p style="margin-top : 0px; font-size: 11px; max-width: 85px;">' + time + '</p></td></tr>' +
+                '</tbody></table>'
+              // '';
+            }
+
+            function attachHelpMessage(marker, locationName, location) {
+
+              var orig = {lat: 40.67381, lng: -73.91390};
+              var dest = location;
+
+              var directionsDisplay = new google.maps.DirectionsRenderer;
+              var directionsService = new google.maps.DirectionsService;
+
+
+              calculateAndDisplayRoute(directionsService, directionsDisplay, orig, dest);
+
+
+              getCalInfo(orig, dest, function (call) {
+                console.log(call.destinationAddresses);
+                console.log(call.rows[0].elements[0].distance.text);
+                console.log(call.rows[0].elements[0].duration.text);
+                var location = call.destinationAddresses;
+                var time = call.rows[0].elements[0].duration.text;
+                marker.addListener('click', function () {
+                  makeHelpPeopleInfo(location, time);
+                  directionsDisplay.setMap(map);
+                });
+              });
+            }
+
+          }
+        )
+        .catch(function (error) {
+          console.log(error);
+        })
+        .then(function () {
+
+        });
+
+    }
+
+    function makeHelpPeopleInfo(location, time) {
+      $(".helpPeopleInfo").show();
+      $("#helpYouLocation").html(location);
+      $("#helpYouTime").html(time);
+    }
+
+
+  </script>
+</head>
+<body>
+<div id="app">
+
+  <div class="login-screen">
+    <div class="view-main">
+      <div class="page">
+        <div class="page-content login-screen-content">
+          <div class="login-screen-title">My App</div>
+          <form>
+            <div class="list">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Username</div>
+                    <div class="item-input-wrap">
+                      <input type="text" name="username" placeholder="Your username">
+                    </div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Password</div>
+                    <div class="item-input-wrap">
+                      <input type="password" name="password" placeholder="Your password">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="list">
+              <ul>
+                <li><a class="item-link list-button" href="#">Sign In</a></li>
+              </ul>
+              <div class="block-footer">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p><a class="link login-screen-close" href="#">Close Login Screen</a></p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar overlay for fullscreen mode-->
+  <div class="statusbar"></div>
+
+  <!-- Views/Tabs container -->
+  <div class="views tabs ios-edges">
+    <div class="toolbar tabbar-labels toolbar-bottom-md">
+      <div class="toolbar-inner">
+        <a href="#view-home" class="tab-link">
+          <img class="tabiconelement_deactive" id="tabmap" src="images/tabbar/mapicon.png">
+        </a>
+        <a href="#view-chat" class="tab-link tab-link-active">
+          <img class="tabiconelement_active" id="tabchat" src="images/tabbar/chat_active.png">
+        </a>
+        <a href="#view-setting" class="tab-link">
+          <img class="tabiconelement_deactive" id="tabsetting" src="images/tabbar/settingicon.png">
+        </a>
+      </div>
+    </div>
+
+    <!-- Sharing Map Page-->
+    <div id="view-home" class="view view-main tab">
+      <!-- Page, data-name contains page name which can be used in page callbacks -->
+      <div class="page" data-name="home">
+        <div class="navbar">
+          <div class="navbar-inner topBar">
+            <div class="title sliding"><img class="topLogo" src="images/logo/logo.png"></div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="helpPeopleInfo" hidden="hidden">
+            <table class="helpYouTable margin-vertical">
+              <tr>
+                <td rowspan="2"><img class="helpYouImg" src="images/helpyou.png"></td>
+                <td>Location</td>
+                <td>Total time</td>
+              </tr>
+              <tr>
+                <td id="helpYouLocation"></td>
+                <td id="helpYouTime"></td>
+              </tr>
+            </table>
+          </div>
+          <div id="walwal_map"></div>
+          <div class="fab fab-right-bottom ">
+            <a href="#" data-sheet=".my-sheet">
+              <img class="sosbutton request-help-popup" src="images/fab.png">
+            </a>
+          </div>
+          <script>
+            walwalMap()
+          </script>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Page -->
+    <div id="view-chat" class="view view-main tab tab-active">
+      <div class="page" data-name="home">
+        <div class="navbar">
+          <div class="navbar-inner topBar">
+            <div class="title sliding topLogo"><img style="width: 62px" src="images/logo/logo.png"></div>
+          </div>
+        </div>
+        <div class="toolbar messagebar mymessageBar">
+          <div class="toolbar-inner">
+            <a class="link toggle-sheet" href="#">
+              <i class="icon f7-icons ios-only" style="color: #919191;">camera</i>
+              <i class="icon material-icons md-only">camera</i>
+            </a>
+            <div class="messagebar-area">
+              <textarea class="messagearea" placeholder="Message"></textarea>
+            </div>
+            <a class="link" href="#">
+              <i class="icon f7-icons ios-only" id="mcBtn" style="color: #919191;">mic</i>
+              <i class="icon material-icons md-only">mic</i>
+
+
+            </a>
+          </div>
+          <div class="messagebar-sheet"></div>
+        </div>
+
+        <div class="page-content messages-content">
+          <div class="messages" id="messageBody">
+            <!-- Messages title -->
+            <div class="messages-title">2018 - 09 - 28</div>
+            <!--<div class="message message-received">-->
+
+            <!--init-->
+            <div class="message message-received">
+              <div class="message-avatar" style="background-image:url(images/botImg.png);"></div>
+              <div class="message-content">
+                <div class="message-bubble">
+                  <div class="message-text">Hi, I’m Helpy chatbot.👋<br>
+                    Do you have any question about disaster?
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="message message-received">
+              <div class="message-avatar" style="background-image:url(images/botImg.png);"></div>
+              <div class="message-content">
+                <div class="message-bubble">
+                  <div class="selectQuestion">
+                    <div class="card-content">
+                      <table>
+                        <thead>
+                        <tr>
+                          <th colspan="2" class="label-cell currentDisasterInfo">The current Disaster Info.</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <th colspan="2" class="label-cell detailDisaster">Earthquakes Info.</th>
+                        </tr>
+                        <tr>
+                          <td class="disasterInfoIcon" rowspan="2"><span style="font-size: 50px">😀</span></td>
+                          <td class="disasterinfoEmotion">Advisory</td>
+                        </tr>
+                        <tr>
+                          <td class="disasterInfoLocationText">Utd Street, Seattle, WA, USA</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                      <table>
+                        <tbody>
+                        <tr>
+                          <th colspan="2" class="label-cell detailDisaster">Wildfire Info.</th>
+                        </tr>
+                        <tr>
+                          <td class="disasterInfoIcon" rowspan="2"><span style="font-size: 50px">😀</span></td>
+                          <td class="disasterinfoEmotion" style="color: #00c961">Safe</td>
+                        </tr>
+                        <tr>
+                          <td class="disasterInfoLocationText">Utd Street, Seattle, WA, USA</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--slider-->
+            <!--<div class="message message-received">-->
+
+            <!--<div class="message-content">-->
+            <!--<div class="message-bubble elevation-2"-->
+            <!--style="height: 350px; width: 430px; background-color: #fafafa; margin-left:50px;float: right;">-->
+            <!--<div data-pagination='{"el": ".swiper-pagination"}' data-space-between="2" data-slides-per-view="auto"-->
+            <!--data-slides-per-view="auto" data-centered-slides="true"-->
+            <!--class="swiper-container swiper-init demo-swiper demo-swiper-auto"-->
+            <!--style="height: 300px; width: 300px; background-color: #fafafa">-->
+            <!--<div class="swiper-wrapper">-->
+            <!--<div class="swiper-slide" style="width: 215px; border: none; background-color: #fafafa"><img-->
+            <!--src="images/tmp/preview1.png" style="width: 215px; height: 278px"></div>-->
+            <!--<div class="swiper-slide" style="width: 215px; border: none; background-color: #fafafa"><img-->
+            <!--src="images/tmp/preview2.png" style="width: 215px; height: 278px"></div>-->
+            <!--<div class="swiper-slide" style="width: 215px; border: none; background-color: #fafafa"><img-->
+            <!--src="images/tmp/preview3.png" style="width: 215px; height: 278px"></div>-->
+            <!--<div class="swiper-slide" style="width: 215px; border: none; background-color: #fafafa"><img-->
+            <!--src="images/tmp/preview2.png" style="width: 215px; height: 278px"></div>-->
+            <!--<div class="swiper-slide" style="width: 215px; border: none; background-color: #fafafa"><img-->
+            <!--src="images/tmp/preview1.png" style="width: 215px; height: 278px"></div>-->
+            <!--<div class="swiper-slide" style="width: 215px; border: none; background-color: #fafafa"></div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--earthquake info-->
+            <!--<div class="message message-received">-->
+            <!--<div class="message-avatar" style="background-image:url(images/botImg.png);"></div>-->
+            <!--<div class="message-content">-->
+            <!--<div class="message-bubble elevation-2">-->
+            <!--<div class="selectQuestion">-->
+            <!--<table>-->
+            <!--<thead>-->
+            <!--<tr>-->
+            <!--<th colspan="2" class="label-cell currentDisasterInfo">The current Disaster Info.</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr>-->
+            <!--<th colspan="2" class="label-cell detailDisaster">Earthquakes Info.</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="disasterInfoIcon" rowspan="2"><span style="font-size: 50px">😀</span></td>-->
+            <!--<td class="disasterinfoEmotion">Advisory</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="disasterInfoLocationText">Utd Street, Seattle, WA, USA</td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
+            <!--</table>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--text-->
+            <!--<div class="message message-received">-->
+            <!--<div class="message-avatar" style="background-image:url(images/botImg.png);"></div>-->
+            <!--<div class="message-content">-->
+            <!--<div class="message-bubble">-->
+            <!--Sorry😥Could you tell me again?-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--article-->
+            <!--<div class="card chatCard">-->
+            <!--<div class="card-footer currentDisasterInfo">Articles</div>-->
+            <!--<div class="card-footer">-->
+            <!--<table>-->
+            <!--<tr>-->
+            <!--<th class="currentDisasterInfo">￼Deadly Earthquake Hits Japan, <br>Adding to Summer of Misery</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="detailDisaster">Just five days before a powerful...</td>-->
+            <!--</tr>-->
+            <!--<img src="images/article/article1.jpg" style="width: 56px; height: 44px; float: right;">-->
+            <!--</table>-->
+            <!--</div>-->
+            <!--<div class="card-footer">-->
+            <!--<table>-->
+            <!--<img src="images/article/article2.jpg" style="width: 56px; height: 44px; float: right;">-->
+            <!--<tr>-->
+            <!--<th class="currentDisasterInfo">￼In Quake-Prone California, <br>Alarm at Scant Insurance-->
+            <!--</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="detailDisaster">“I go to sleep praying that there...</td>-->
+            <!--</tr>-->
+            <!--</table>-->
+            <!--</div>-->
+            <!--<div class="card-footer">-->
+            <!--<table>-->
+            <!--<tr>-->
+            <!--<th class="currentDisasterInfo">￼Deadly Earthquake Hits Japan, <br>Adding to Summer of Misery</th>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="detailDisaster">A powerful earthquake struck...</td>-->
+            <!--</tr>-->
+            <!--<img src="images/article/article3.jpg" style="width: 56px; height: 44px; float: right;">-->
+            <!--</table>-->
+            <!--</div>-->
+            <!--<div class="card-footer" style="background-image: linear-gradient(#5ee7ff, #00cdff)">-->
+            <!--<a href="#" class="link" style="color: white; font-family: d1m; margin-right: auto; margin-left: auto;">View-->
+            <!--Detail</a>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--closeShelter-->
+            <!--<div class="card chatCard">-->
+            <!--<div class="card-footer currentDisasterInfo">Refuge Info.</div>-->
+            <!--<div class="card-footer">-->
+            <!--<table class="helpYouTable1 margin-vertical">-->
+            <!--<th colspan="2">-->
+            <!--<div id="chatMap" class="chatMap"></div>-->
+            <!--</th>-->
+            <!--<tr>-->
+            <!--<td style="font-family: d1b;">Location</td>-->
+            <!--<td style="font-family: d1b;">Total time</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td id="helpYouLocation1" style="width: 110px;">dasdsad</td>-->
+            <!--<td id="helpYouTime1">10</td>-->
+            <!--</tr>-->
+            <!--</table>-->
+            <!--</div>-->
+
+            <!--<script>-->
+            <!--initMap()-->
+            <!--var map;-->
+
+            <!--function initMap() {-->
+            <!--ma1p = new google.maps.Map(document.getElementById('chatMap'), {-->
+            <!--center: {lat: -34.397, lng: 150.644},-->
+            <!--zoom: 8-->
+            <!--});-->
+            <!--}-->
+            <!--</script>-->
+            <!--<div class="card-footer" style="background-image: linear-gradient(#5ee7ff, #00cdff);">-->
+            <!--<a href="#" class="link" style="color: white; font-family: d1m; margin-right: auto; margin-left: auto;">View-->
+            <!--Detail</a>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--button-->
+            <!--<div data-space-between="20" data-slides-per-view="4" class="swiper-container swiper-init demo-swiper"-->
+            <!--style="height: 50px;">-->
+            <!--<div class="swiper-wrapper" style="padding-left: 50px; height: 50px">-->
+            <!--<div class="swiper-slide" style="width: 50px; height: 36px; border: none; background-color: #fafafa">-->
+            <!--<button class="col button button-raised button-fill button-round myBtn"-->
+            <!--style="width: 84px; font-size: 8pt; background-image: linear-gradient(#39a1f7, #782ff5)">Fill-->
+            <!--</button>-->
+            <!--</div>-->
+            <!--<div class="swiper-slide" style="width: 50px; height: 36px; border: none; background-color: #fafafa">-->
+            <!--<button class="col button button-raised button-fill button-round myBtn"-->
+            <!--style="width: 84px; font-size: 8pt; background-image: linear-gradient(#39a1f7, #782ff5)">Fill-->
+            <!--</button>-->
+            <!--</div>-->
+            <!--<div class="swiper-slide" style="width: 50px; height: 36px; border: none; background-color: #fafafa">-->
+            <!--<button class="col button button-raised button-fill button-round myBtn"-->
+            <!--style="width: 84px; font-size: 8pt; background-image: linear-gradient(#39a1f7, #782ff5)">Fill-->
+            <!--</button>-->
+            <!--</div>-->
+            <!--<div class="swiper-slide" style="width: 50px; height: 36px; border: none; background-color: #fafafa">-->
+            <!--<button class="col button button-raised button-fill button-round myBtn"-->
+            <!--style="width: 84px; font-size: 8pt; background-image: linear-gradient(#39a1f7, #782ff5)">Fill-->
+            <!--</button>-->
+            <!--</div>-->
+            <!--<div class="swiper-slide" style="width: 50px; height: 36px; border: none; background-color: #fafafa">-->
+
+            <!--</div>-->
+
+
+            <!--</div>-->
+            <!--</div>-->
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Setting Page -->
+    <div id="view-setting" class="view view-main tab">
+      <div class="page" data-name="home">
+        <div class="navbar">
+          <div class="navbar-inner topBar">
+            <div class="title sliding topLogo"><img style="width: 62px" src="images/logo/logo.png"></div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div style="width: 375px; height: 290px; background-image: linear-gradient(#39a1f7, #782ff5);">
+            <div style="padding-top: 30px">
+              <p style="text-align: center">
+                <img src="images/setting/user.png" style="width: 80px; margin-left: auto; margin-right: auto;">
+              </p>
+              <div style="font-family: d1b; color: #ffffff; font-size: 14pt; text-align: center">3234.3234.32</div>
+            </div>
+            <button class="col button button-big button-round"
+                    style="background-image: linear-gradient(#5ee7ff, #00cdff); width: 221px; color: #FFffff;
+                    font-family: d1m; margin-top: 20px; margin-right: auto; margin-left: auto">
+              Help me!
+            </button>
+          </div>
+          <div>
+            <div style="margin-left: 27pt; margin-top: 35pt">
+              <div style="font-family: d1b; font-size: 15pt; width: 260px">
+                Notification
+              </div>
+              <div style="display: inline; float: right; margin-right: 20px">
+                <span class="toggle-icon"></span>
+              </div>
+              <div style="font-family: d1; width: 260px; margin-top: 8pt;">
+                This function is only for members.<br> Please log in.
+              </div>
+            </div>
+
+            <div style="margin-left: 27pt; margin-top: 30pt">
+              <div style="font-family: d1b; font-size: 15pt; width: 260px">
+                Register Emergency Contact
+              </div>
+              <div style="display: inline; float: right; margin-right: 20px">
+                <span class="toggle-icon"></span>
+              </div>
+              <div style="margin-top: 8pt; font-family: d1; width: 260px">
+                This function is only for members.<br> Please log in.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      if (!('url' in window) && ('webkitURL' in window)) {
+        window.URL = window.URL;
+      }
+
+      $('#camera').change(function (e) {
+        geoFindMe(function (lat, lng) {
+          myInfo.lat = lat;
+          myInfo.lng = lng;
+        });
+
+        console.log(e.target.files[0]);
+
+        var formData = new FormData();
+
+        formData.append('lat', myInfo.lat);
+        formData.append('lng', myInfo.lng);
+        formData.append('photo', e.target.files[0]);
+
+        axios.post(serverurl + 'upload/user',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          },
+        ).then(function (res) {
+          console.log(res);
+        }).catch(function (error) {
+          console.log(error);
+        });
+
+
+        messages.addMessage({
+          text: 'send Image',
+        });
+
+        socket.emit('message', 'event');
+
+        var tmp = 0;
+        socket.on('message', (data) => {
+          if (tmp == 0) {
+            receiveMessage(data);
+            tmp = tmp + 1;
+          }
+        });
+        tmp = 0;
+
+      });
+    });
+
+
+  </script>
+
+  <!-- Framework7 library -->
+  <script src="framework7/js/framework7.min.js"></script>
+
+  <!-- App routes -->
+  <script src="js/routes.js"></script>
+
+  <!-- Your custom app scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>
