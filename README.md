@@ -4,6 +4,7 @@
 
 **Click [[here]](https://my.readymag.com/edit/1174290/1/) to view the details of the project.**
 
+![image](https://user-images.githubusercontent.com/42545200/46241805-ef11e300-c3f9-11e8-9b88-627354132002.png)
 
 ## What problems?
 
