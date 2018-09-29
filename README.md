@@ -149,7 +149,8 @@ Helpy is capable of providing instructions for 20 main situations based on the o
 
 ## Watch the Video(Demo)
 
-
+![image](https://user-images.githubusercontent.com/42545200/46242110-3b135680-c3ff-11e8-8921-2fd0a3f70406.png)
+https://vimeo.com/292444609
 
 ## What is the difference/value of HELPY service?
 
