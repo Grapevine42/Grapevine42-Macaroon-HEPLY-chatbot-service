@@ -31,7 +31,7 @@ When the user experiences a situation similar to the two examples previously men
 - Say, there was a disaster notification message, ‘Earthquake 6km Northwest of San Francisco’.
 The user would probably say, _‘I need specific disaster information for where I am!’,_ after reading the message.
 
-If you want to see further details of the  problem report, Click [[here]](https://my.readymag.com/edit/1174290/1/)
+If you want to see further details of the  problem report, Click **[[here]](https://my.readymag.com/edit/1174290/1/)**
 
 ## Identification of key finding through IBM Design Thinking & Research
 > **_From the previously mentioned, it can be seen that it is important to provide intuitive information considering the user’s circumstance._**
